@@ -9,13 +9,18 @@ let deck             = [];
 const tipos          = ['C','D','H','S'];
 const especiales     = ['A','J','Q','K'];
 let puntosJugador    = 0;
-    puntosComputadora= 0;
+let puntosComputadora= 0;
 
 //referencias de HTML
 
 const btnPedir = document.querySelector('#btnPedir');
-const divCartasJugador = document.querySelector('#jugador-cartas')
-const puntosHTML = document.querySelectorAll('small');
+const btnDetener = document.querySelector('#btnDetener');
+
+const divCartasJugador      = document.querySelector('#jugador-cartas')
+const divCartasComputadora  = document.querySelector('#computadora-cartas')
+
+const puntosHTML = document.querySelectorAll('small')
+
 //console.log(btnPedir)
 
 
@@ -66,6 +71,33 @@ const valorCarta = (carta) => {
     
 }
 
+//computadora
+
+
+const turnoComputadora = (puntosMinimos)=>{
+    
+    do {
+        const carta = pedirCarta()
+
+        puntosComputadora = puntosComputadora + valorCarta(carta);
+        puntosHTML[1].innerText = puntosComputadora;
+
+        //creo la carta
+        // <img class='carta' src="assets/cartas/2C.png"/>
+        const imgCarta = document.createElement('img');
+        imgCarta.src = `assets/cartas/${carta}.png`;
+        imgCarta.classList.add('carta');
+    
+        //renderizo la carta
+        divCartasComputadora.append(imgCarta);
+        
+        if( puntosMinimos > 21){
+            break;
+        }
+
+        } while ((puntosComputadora < puntosMinimos) && (puntosMinimos <= 21));
+
+}
 
 
 //EVENTOS
@@ -90,12 +122,25 @@ btnPedir.addEventListener('click', ()=>{
 
         console.warn('Perdiste')
         btnPedir.disabled = true;
+        btnDetener.disabled = true;
+        
+        turnoComputadora(puntosJugador);
         
     } else if (puntosJugador === 21) {
         console.warn('21, genial')
         btnPedir.disabled = true;
+        btnDetener.disabled = true;
+
+        turnoComputadora(puntosJugador);
     }
     console.log(imgCarta)
     console.log(puntosJugador)
    
 })
+
+btnDetener.addEventListener('click', ()=>{
+    btnPedir.disabled = true;
+    btnDetener.disabled = true;
+
+    turnoComputadora( puntosJugador )
+} )
